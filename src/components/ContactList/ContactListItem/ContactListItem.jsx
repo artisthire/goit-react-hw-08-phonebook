@@ -9,7 +9,7 @@ function ContactListItem({ contact }) {
   const [removeContact, { isLoading: isRemovingContact }] =
     useRemoveContactMutation();
   const dispatch = useDispatch();
-  const { name, phone, id } = contact;
+  const { name, number, id } = contact;
 
   const onContactRemove = id => {
     removeContact(id).finally(() => dispatch(filterActions.setFilter('')));
@@ -17,7 +17,7 @@ function ContactListItem({ contact }) {
 
   return (
     <Item>
-      {name}: <Number>{phone}</Number>{' '}
+      {name}: <Number>{number}</Number>{' '}
       <Button
         type="button"
         onClick={() => onContactRemove(id)}
@@ -31,10 +31,10 @@ function ContactListItem({ contact }) {
 }
 
 ContactListItem.propTypes = {
-  contact: PropTypes.shape({
+  contact: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
   }).isRequired,
 };
 

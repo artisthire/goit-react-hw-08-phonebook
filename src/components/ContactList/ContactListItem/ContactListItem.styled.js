@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 export const Item = styled.li`
   margin: 0 0 10px 0;

@@ -65,7 +65,7 @@ function ContactForm() {
         );
       }
     } else {
-      addContact({ name: nameValue, phone: telValue }).finally(() => {
+      addContact({ name: nameValue, number: telValue }).finally(() => {
         dispatch(filterActions.setFilter(''));
         form.reset();
       });

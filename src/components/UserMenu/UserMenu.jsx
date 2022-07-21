@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { userOperations, userSelectors } from 'redux/user';
+import { userOperations, userSelectors, userActions } from 'redux/user';
 import { toastErrorNotification } from 'services/utils';
 
 function UserMenu() {
@@ -12,7 +12,9 @@ function UserMenu() {
   };
 
   if (connectionError) {
-    toastErrorNotification.show(connectionError);
+    toastErrorNotification.show(connectionError, null, () =>
+      dispatch(userActions.clearErrors())
+    );
   }
 
   return (

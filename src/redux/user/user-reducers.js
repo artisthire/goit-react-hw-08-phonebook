@@ -5,6 +5,7 @@ import {
   logoutUser,
   getCurrentUser,
 } from './user-operations';
+import { clearErrors } from './user-actions';
 
 const initialState = {
   profile: {
@@ -75,6 +76,9 @@ const userSlice = createSlice({
         ...initialState.error,
         getCurrent: payload,
       };
+    },
+    [clearErrors]: state => {
+      state.error = initialState.error;
     },
   },
 });

@@ -1,8 +1,10 @@
+import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userOperations, userSelectors } from 'redux/user';
+import { userOperations, userSelectors, userActions } from 'redux/user';
 import { toastErrorNotification } from 'services/utils';
 
 function Register() {
+  const errorModalId = useRef(null);
   const dispatch = useDispatch();
   const connectionError = useSelector(userSelectors.errorRegister);
 
@@ -16,13 +18,21 @@ function Register() {
   };
 
   if (connectionError) {
-    toastErrorNotification.show(connectionError);
+    errorModalId.current = toastErrorNotification.show(
+      connectionError,
+      null,
+      () => dispatch(userActions.clearErrors())
+    );
   }
+
+  const handleClick = () => {
+    toastErrorNotification.hide(errorModalId.current);
+  };
 
   return (
     <div>
       <h1>Register page</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onClick={handleClick}>
         <p>
           <label>
             Name: <input type="text" name="name" required />

@@ -3,12 +3,17 @@ import { toast } from 'react-toastify';
 import { contactsApi } from 'redux/contacts/contacts-api';
 
 const toastErrorNotification = {
-  show(customText, error) {
-    customText += error?.status ? ` Code: ${error.status}.` : '';
-    customText += error?.data ? ` Message: ${JSON.stringify(error.data)}.` : '';
+  show(customText, error, callback) {
+    if (error) {
+      customText += error?.status ? ` Code: ${error.status}.` : '';
+      customText += error?.data
+        ? ` Message: ${JSON.stringify(error.data)}.`
+        : '';
+    }
 
     const toastId = toast.error(customText, {
       toastId: `id-${customText.length}-${error?.status ?? 1}`,
+      onClose: () => callback && callback(),
     });
     return toastId;
   },

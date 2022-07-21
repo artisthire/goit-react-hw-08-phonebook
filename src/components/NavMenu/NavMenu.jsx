@@ -16,8 +16,7 @@ function NavMenu() {
         <Toolbar disableGutters>
           {isLogin && (
             <Box sx={{ flexGrow: 1, display: { xs: 'flex' } }}>
-              <NavLinkStyled to="/">Home</NavLinkStyled>
-              <NavLinkStyled to="/contacts">Contacts</NavLinkStyled>
+              <NavLinkStyled to="/">Contacts</NavLinkStyled>
             </Box>
           )}
 

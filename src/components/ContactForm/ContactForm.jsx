@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAddContactMutation } from 'redux/contacts/contacts-api';
 import { getCashedContacts } from 'redux/contacts/contacts-selectors';
@@ -7,7 +7,14 @@ import { toastErrorNotification } from 'services/utils';
 import LoadSpinner from 'components/LoadSpinner';
 import { Form, Label, LabelName, Input, Button } from './ContactForm.styled';
 
+const initialState = {
+  name: '',
+  number: '',
+};
+
 function ContactForm() {
+  const [formValue, setFormValue] = useState(initialState);
+  const { name, number } = formValue;
   const toastIsNameId = useRef(null);
   const cachedContacts = useSelector(getCashedContacts);
   const [addContact, { isLoading: isAddingContact }] = useAddContactMutation();
@@ -20,10 +27,7 @@ function ContactForm() {
     evt.preventDefault();
     warningToastDismiss();
 
-    const form = evt.currentTarget;
-    const nameValue = form.name.value.trim();
-    const telValue = form.number.value.trim();
-    const normalizeName = nameValue.toLocaleLowerCase();
+    const normalizeName = name.toLocaleLowerCase();
 
     const isNameInContacts = cachedContacts.some(
       contact => contact.name.toLocaleLowerCase() === normalizeName
@@ -31,14 +35,24 @@ function ContactForm() {
 
     if (isNameInContacts) {
       toastIsNameId.current = toastErrorNotification.show(
-        `"${nameValue}" is already in contacts`
+        `"${name}" is already in contacts`
       );
-    } else {
-      addContact({ name: nameValue, number: telValue }).finally(() => {
+      return;
+    }
+
+    if (name && number) {
+      addContact({ name, number }).finally(() => {
         dispatch(filterActions.setFilter(''));
-        form.reset();
+        setFormValue(initialState);
       });
     }
+  };
+
+  const handleChange = ({ currentTarget }) => {
+    setFormValue({
+      ...formValue,
+      [currentTarget.name]: currentTarget.value.trim(),
+    });
   };
 
   return (
@@ -50,8 +64,9 @@ function ContactForm() {
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          defaultValue=""
           required
+          value={name}
+          onChange={handleChange}
         />
       </Label>
       <Label>
@@ -61,8 +76,9 @@ function ContactForm() {
           name="number"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          defaultValue=""
           required
+          value={number}
+          onChange={handleChange}
         />
       </Label>
       <Button type="submit" disabled={isAddingContact}>

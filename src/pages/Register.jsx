@@ -1,32 +1,45 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userOperations, userSelectors, userActions } from 'redux/user';
+import { userOperations, userSelectors, clearErrors } from 'redux/user';
+import { contactsApi } from 'redux/contacts/contacts-api';
 import { toastErrorNotification } from 'services/utils';
 
+const initialState = {
+  name: '',
+  email: '',
+  password: '',
+};
+
 function Register() {
+  const [formValue, setFormValue] = useState(initialState);
+  const { name, email, password } = formValue;
   const errorModalId = useRef(null);
   const dispatch = useDispatch();
   const connectionError = useSelector(userSelectors.errorRegister);
-
-  const handleSubmit = async evt => {
-    evt.preventDefault();
-    const formData = Object.fromEntries(
-      new FormData(evt.currentTarget).entries()
-    );
-
-    dispatch(userOperations.registerUser(formData));
-  };
 
   if (connectionError) {
     errorModalId.current = toastErrorNotification.show(
       connectionError,
       null,
-      () => dispatch(userActions.clearErrors())
+      () => dispatch(clearErrors())
     );
   }
 
+  const handleSubmit = async evt => {
+    evt.preventDefault();
+    dispatch(contactsApi.util.invalidateTags(['Contacts']));
+    dispatch(userOperations.registerUser(formValue));
+  };
+
   const handleClick = () => {
     toastErrorNotification.hide(errorModalId.current);
+  };
+
+  const handleChange = ({ currentTarget }) => {
+    setFormValue({
+      ...formValue,
+      [currentTarget.name]: currentTarget.value,
+    });
   };
 
   return (
@@ -35,7 +48,14 @@ function Register() {
       <form onSubmit={handleSubmit} onClick={handleClick}>
         <p>
           <label>
-            Name: <input type="text" name="name" required />
+            Name:{' '}
+            <input
+              type="text"
+              name="name"
+              required
+              value={name}
+              onChange={handleChange}
+            />
           </label>
         </p>
         <p>
@@ -46,13 +66,22 @@ function Register() {
               name="email"
               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
               required
+              value={email}
+              onChange={handleChange}
             />
           </label>
         </p>
         <p>
           <label>
             Password:{' '}
-            <input type="password" name="password" required minLength={7} />
+            <input
+              type="password"
+              name="password"
+              minLength={7}
+              required
+              value={password}
+              onChange={handleChange}
+            />
           </label>
         </p>
 

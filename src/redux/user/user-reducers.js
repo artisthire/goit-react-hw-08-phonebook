@@ -5,7 +5,6 @@ import {
   logoutUser,
   getCurrentUser,
 } from './user-operations';
-import { clearErrors } from './user-actions';
 
 const initialState = {
   profile: {
@@ -15,48 +14,53 @@ const initialState = {
   token: '',
   isLogin: false,
   isFetchingCurrentUser: false,
-  error: { register: '', login: '', logout: '', getCurrent: '' },
+  errors: { register: '', login: '', logout: '' },
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
+  reducers: {
+    clearErrors: state => {
+      state.errors = initialState.errors;
+    },
+  },
   extraReducers: {
     [registerUser.fulfilled]: (state, { payload }) => {
       state.profile = payload.user;
       state.token = payload.token;
       state.isLogin = true;
-      state.error.register = '';
+      state.errors.register = '';
     },
     [registerUser.rejected]: (state, { error }) => {
       state.profile = initialState.profile;
       state.token = '';
       state.isLogin = false;
-      state.error = { ...initialState.error, register: error.message };
+      state.errors = { ...initialState.errors, register: error.message };
     },
     [loginUser.fulfilled]: (state, { payload }) => {
       state.profile = payload.user;
       state.token = payload.token;
       state.isLogin = true;
-      state.error.login = '';
+      state.errors.login = '';
     },
     [loginUser.rejected]: (state, { error }) => {
       state.profile = initialState.profile;
       state.token = '';
       state.isLogin = false;
-      state.error = { ...initialState.error, login: error.message };
+      state.errors = { ...initialState.errors, login: error.message };
     },
     [logoutUser.fulfilled]: state => {
       state.profile = initialState.profile;
       state.token = '';
       state.isLogin = false;
-      state.error = initialState.error;
+      state.errors = initialState.errors;
     },
     [logoutUser.rejected]: (state, { error }) => {
       state.profile = initialState.profile;
       state.token = '';
       state.isLogin = false;
-      state.error = { ...initialState.error, logout: error.message };
+      state.errors = { ...initialState.errors, logout: error.message };
     },
     [getCurrentUser.pending]: state => {
       state.isFetchingCurrentUser = true;
@@ -65,22 +69,16 @@ const userSlice = createSlice({
       state.profile = payload;
       state.isLogin = true;
       state.isFetchingCurrentUser = false;
-      state.error.getCurrent = '';
     },
-    [getCurrentUser.rejected]: (state, { payload }) => {
+    [getCurrentUser.rejected]: state => {
       state.profile = initialState.profile;
       state.token = '';
       state.isLogin = false;
       state.isFetchingCurrentUser = false;
-      state.error = {
-        ...initialState.error,
-        getCurrent: payload,
-      };
-    },
-    [clearErrors]: state => {
-      state.error = initialState.error;
     },
   },
 });
+
+export const { clearErrors } = userSlice.actions;
 
 export default userSlice;

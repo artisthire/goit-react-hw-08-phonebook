@@ -14,11 +14,11 @@ async function register(userData) {
     token.set(data.token);
     return data;
   } catch ({ response }) {
-    if (response.status === 400 && response.data._message) {
-      throw new Error(`Error: ${response.data._message}`);
+    if (response.status === 400 && response.data.message) {
+      throw new Error(`Error: ${response.data.message}`);
     }
 
-    throw new Error('Error server connection.');
+    throw new Error(`Error server connection. Code: ${response.status}.`);
   }
 }
 
@@ -27,8 +27,12 @@ async function login(userData) {
     const { data } = await axios.post('/users/login', userData);
     token.set(data.token);
     return data;
-  } catch {
-    throw new Error('Error server connection.');
+  } catch ({ response }) {
+    if (response.status === 400) {
+      throw new Error(`Wrong login or password`);
+    }
+
+    throw new Error(`Error server connection. Code: ${response.status}.`);
   }
 }
 
@@ -36,8 +40,8 @@ async function logout() {
   try {
     await axios.post('/users/logout');
     token.unset();
-  } catch {
-    throw new Error('Error server connection.');
+  } catch ({ response }) {
+    throw new Error(`Error server connection. Code: ${response.status}.`);
   }
 }
 
@@ -47,8 +51,8 @@ async function getCurrent(persisToken) {
   try {
     const { data } = await axios.get('/users/current');
     return data;
-  } catch {
-    throw new Error('Error server connection.');
+  } catch ({ response }) {
+    throw new Error(`Error server connection. Code: ${response.status}.`);
   }
 }
 

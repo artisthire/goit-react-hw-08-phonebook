@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { getToken } from './user-selectors';
 import { register, login, logout, getCurrent } from 'services/user-server-api';
 
 const registerUser = createAsyncThunk('user/register', async userData => {
@@ -28,7 +29,7 @@ const logoutUser = createAsyncThunk('user/logout', async () => {
 });
 
 const getCurrentUser = createAsyncThunk('user/current', async (_, thunkAPI) => {
-  const persistToken = thunkAPI.getState().user.token;
+  const persistToken = getToken(thunkAPI.getState());
 
   if (!persistToken) {
     return thunkAPI.rejectWithValue('Only authorized access');

@@ -9,6 +9,7 @@ import ProtectedRoute from 'components/ProtectedRoute';
 import Contacts from 'pages/Contacts';
 import Register from 'pages/Register';
 import Login from 'pages/Login';
+import NotFound from 'pages/NotFound';
 import NavMenu from 'components/NavMenu';
 import styles from './App.module.css';
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="login" element={<Login />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
     </>

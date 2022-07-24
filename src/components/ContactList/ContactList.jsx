@@ -9,7 +9,7 @@ import styles from './ContactList.module.css';
 
 function ContactList() {
   const filter = useSelector(filterSelectors.getFilter);
-  const { data: contacts = [], isLoading: isLoadingContacts } =
+  const { data: contacts = [], isFetching: isLoadingContacts } =
     useGetContactsQuery();
   const visibleContacts = useMemo(() => {
     const normalizedFilterValue = filter.toLowerCase();

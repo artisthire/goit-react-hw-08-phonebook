@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import List from '@mui/material/List';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useGetContactsQuery } from 'redux/contacts/contacts-api';
 import { filterSelectors } from 'redux/filter';
 import ContactListItem from 'components/ContactList/ContactListItem';
-import LoadSpinner from 'components/LoadSpinner';
-import { List } from './ContactList.styled';
+import styles from './ContactList.module.css';
 
 function ContactList() {
   const filter = useSelector(filterSelectors.getFilter);
@@ -20,22 +21,16 @@ function ContactList() {
     return visibleContacts;
   }, [contacts, filter]);
 
+  if (isLoadingContacts) {
+    return <CircularProgress className={styles.loadingIcon} size={60} />;
+  }
+
   return (
-    <>
-      {!isLoadingContacts && (
-        <List>
-          {visibleContacts.map(contact => (
-            <ContactListItem key={contact.id} contact={contact} />
-          ))}
-        </List>
-      )}
-      {isLoadingContacts && (
-        <LoadSpinner
-          size={60}
-          style={{ display: 'block', margin: '30px auto' }}
-        />
-      )}
-    </>
+    <List className={styles.list}>
+      {visibleContacts.map(contact => (
+        <ContactListItem key={contact.id} contact={contact} />
+      ))}
+    </List>
   );
 }
 

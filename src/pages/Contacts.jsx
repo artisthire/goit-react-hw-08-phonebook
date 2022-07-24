@@ -1,4 +1,6 @@
 import { useSelector } from 'react-redux';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import { userSelectors } from 'redux/user';
 import ContactForm from 'components/ContactForm';
 import ContactList from 'components/ContactList';
@@ -9,18 +11,18 @@ function Contacts() {
 
   if (isLogin) {
     return (
-      <div>
-        <h1>Phonebook</h1>
+      <Container disableGutters={true} maxWidth="sm">
         <ContactForm />
 
-        <h2>Contacts</h2>
+        <Typography variant="h4" component="h2" sx={{ margin: '40px 0 20px' }}>
+          Contacts
+        </Typography>
         <Filter />
 
         <ContactList />
-      </div>
+      </Container>
     );
   }
-  return null;
 }
 
 export default Contacts;

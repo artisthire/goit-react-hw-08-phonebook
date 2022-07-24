@@ -3,36 +3,58 @@ import AppBar from '@mui/material/AppBar';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
+import { NavLink } from 'react-router-dom';
 import { userSelectors } from 'redux/user';
 import UserMenu from 'components/UserMenu';
-import { NavLinkStyled } from './NavMenu.styled';
+import styles from './NavMenu.module.css';
 
 function NavMenu() {
   const isLogin = useSelector(userSelectors.isLogin);
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#2a7385' }}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
+    <AppBar position="static" component="div" className={styles.navMenu}>
+      <Container maxWidth="md">
+        <Toolbar disableGutters className={styles.inner}>
           {isLogin && (
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex' } }}>
-              <NavLinkStyled to="/">Contacts</NavLinkStyled>
+            <Box className={styles.mainMenu}>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive
+                    ? `${styles.link} ${styles.link_active}`
+                    : styles.link
+                }
+              >
+                Contacts
+              </NavLink>
             </Box>
           )}
 
           {!isLogin && (
-            <Box
-              sx={{ flexGrow: 0, display: { xs: 'flex', marginLeft: 'auto' } }}
-            >
-              <NavLinkStyled to="/register">Singup</NavLinkStyled>
-              <NavLinkStyled to="/login">Login</NavLinkStyled>
+            <Box className={styles.registrationMenu}>
+              <NavLink
+                to="/register"
+                className={({ isActive }) =>
+                  isActive
+                    ? `${styles.link} ${styles.link_active}`
+                    : styles.link
+                }
+              >
+                Singup
+              </NavLink>
+              <NavLink
+                to="/login"
+                className={({ isActive }) =>
+                  isActive
+                    ? `${styles.link} ${styles.link_active}`
+                    : styles.link
+                }
+              >
+                Login
+              </NavLink>
             </Box>
           )}
-          {isLogin && (
-            <Box sx={{ flexGrow: 0, display: { xs: 'flex' } }}>
-              <UserMenu />
-            </Box>
-          )}
+          {isLogin && <UserMenu />}
         </Toolbar>
       </Container>
     </AppBar>

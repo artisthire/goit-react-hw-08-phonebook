@@ -1,6 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import FormGroup from '@mui/material/FormGroup';
 import { filterSelectors, filterActions } from 'redux/filter';
-import { Label, LabelName, Input } from './Filter.styled';
+import styles from './Filter.module.css';
 
 function Filter() {
   const filterValue = useSelector(filterSelectors.getFilter);
@@ -10,16 +13,21 @@ function Filter() {
     dispatch(filterActions.setFilter(currentTarget.value));
 
   return (
-    <Label>
-      <LabelName>Find contact by name</LabelName>
-      <Input
-        type="search"
-        name="filter"
-        autoComplete="off"
-        value={filterValue}
-        onChange={onFilterChange}
-      />
-    </Label>
+    <Container disableGutters={true} maxWidth="sm" className={styles.container}>
+      <FormGroup>
+        <TextField
+          id="search"
+          label="Find contact by name"
+          variant="outlined"
+          size="small"
+          type="search"
+          name="search"
+          required
+          value={filterValue}
+          onChange={onFilterChange}
+        />
+      </FormGroup>
+    </Container>
   );
 }
 

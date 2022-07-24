@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.submenuItem {
+  padding-left: 10px;
+  padding-right: 25px;
+}

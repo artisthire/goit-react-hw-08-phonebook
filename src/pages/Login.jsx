@@ -1,8 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import TextField from '@mui/material/TextField';
+import FormGroup from '@mui/material/FormGroup';
 import { userOperations, userSelectors, clearErrors } from 'redux/user';
 import { contactsApi } from 'redux/contacts/contacts-api';
-import { toastErrorNotification } from 'services/utils';
+import FormContainer from 'components/FormContainer';
 
 const initialState = {
   email: '',
@@ -12,26 +14,14 @@ const initialState = {
 function Login() {
   const [formValue, setFormValue] = useState(initialState);
   const { email, password } = formValue;
-  const errorModalId = useRef(null);
   const dispatch = useDispatch();
-  const connectionError = useSelector(userSelectors.errorLogin);
-
-  if (connectionError) {
-    errorModalId.current = toastErrorNotification.show(
-      connectionError,
-      null,
-      () => dispatch(clearErrors())
-    );
-  }
+  const errorMessage = useSelector(userSelectors.errorLogin);
+  const isLoading = useSelector(userSelectors.isLoading);
 
   const handleSubmit = evt => {
     evt.preventDefault();
     dispatch(contactsApi.util.invalidateTags(['Contacts']));
     dispatch(userOperations.loginUser(formValue));
-  };
-
-  const handleClick = () => {
-    toastErrorNotification.hide(errorModalId.current);
   };
 
   const handleChange = ({ currentTarget }) => {
@@ -42,41 +32,54 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Login page</h1>
-      <form onSubmit={handleSubmit} onClick={handleClick}>
-        <p>
-          <label>
-            Email:{' '}
-            <input
-              type="email"
-              name="email"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-              autoComplete="true"
-              title="Email should contain simbol @, minimum two letters after @ in domain"
-              required
-              value={email}
-              onChange={handleChange}
-            />
-          </label>
-        </p>
-        <p>
-          <label>
-            Password:{' '}
-            <input
-              type="password"
-              name="password"
-              minLength={7}
-              required
-              value={password}
-              onChange={handleChange}
-            />
-          </label>
-        </p>
-
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <FormContainer
+      title="Login form"
+      submit={{
+        handler: handleSubmit,
+        isProgress: isLoading,
+        btnText: 'Login',
+      }}
+      processFormError={{
+        message: errorMessage,
+        onClose: () => dispatch(clearErrors()),
+      }}
+    >
+      <FormGroup>
+        <TextField
+          id="email"
+          label="Email"
+          variant="outlined"
+          size="small"
+          type="email"
+          name="email"
+          autoComplete="true"
+          inputProps={{
+            pattern: '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$',
+            title:
+              'Email should contain simbol @, minimum two letters after @ in domain',
+          }}
+          required
+          value={email}
+          onChange={handleChange}
+        />
+      </FormGroup>
+      <FormGroup>
+        <TextField
+          id="password"
+          label="Password"
+          variant="outlined"
+          size="small"
+          type="password"
+          name="password"
+          inputProps={{
+            minLength: 7,
+          }}
+          required
+          value={password}
+          onChange={handleChange}
+        />
+      </FormGroup>
+    </FormContainer>
   );
 }
 

@@ -1,0 +1,42 @@
+.navMenu {
+  font-size: 20px;
+}
+
+.inner {
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.mainMenu {
+  display: flex;
+  flex-grow: 1;
+}
+
+.registrationMenu {
+  display: flex;
+  margin-left: auto;
+}
+
+.link {
+  display: block;
+  padding: 4px 8px;
+  font-size: inherit;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.link:hover {
+  opacity: 0.8;
+}
+
+.link_active {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.link_active:hover {
+  opacity: 1;
+}

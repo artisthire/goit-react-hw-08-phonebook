@@ -1,0 +1,32 @@
+.itemIcon {
+  width: 1.3em !important;
+  height: 1.3em !important;
+}
+
+.itemText {
+  font-size: inherit;
+}
+
+.itemPhone {
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btnContainer {
+  position: relative;
+  margin-left: 5px;
+}
+
+.btn {
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+}
+
+.btnIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -12px;
+  margin-left: -12px;
+  color: #d6bc65;
+}

@@ -1,9 +1,17 @@
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useRemoveContactMutation } from 'redux/contacts/contacts-api';
 import { filterActions } from 'redux/filter';
-import PropTypes from 'prop-types';
-import LoadSpinner from 'components/LoadSpinner';
-import { Item, Number, Button } from './ContactListItem.styled';
+import styles from './ContactListItem.module.css';
 
 function ContactListItem({ contact }) {
   const [removeContact, { isLoading: isRemovingContact }] =
@@ -16,17 +24,38 @@ function ContactListItem({ contact }) {
   };
 
   return (
-    <Item>
-      {name}: <Number>{number}</Number>{' '}
-      <Button
-        type="button"
-        onClick={() => onContactRemove(id)}
-        disabled={isRemovingContact}
-      >
-        {isRemovingContact && <LoadSpinner style={{ marginRight: 5 }} />}
-        Delete
-      </Button>
-    </Item>
+    <ListItem>
+      <ListItemIcon>
+        <ContactPhoneIcon color="primary" className={styles.itemIcon} />
+      </ListItemIcon>
+      <ListItemText className={styles.itemText}>
+        {name}:{' '}
+        <Link
+          href={`tel:+${number}`}
+          underline="none"
+          className={styles.itemPhone}
+        >
+          {number}
+        </Link>
+      </ListItemText>
+
+      <Box className={styles.btnContainer}>
+        <Button
+          variant="contained"
+          type="button"
+          aria-label="Delete"
+          size="small"
+          className={styles.btn}
+          disabled={isRemovingContact}
+          onClick={() => onContactRemove(id)}
+        >
+          <DeleteIcon />
+        </Button>
+        {isRemovingContact && (
+          <CircularProgress size={24} className={styles.btnIcon} />
+        )}
+      </Box>
+    </ListItem>
   );
 }
 
